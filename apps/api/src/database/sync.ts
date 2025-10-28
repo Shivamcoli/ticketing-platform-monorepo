@@ -1,6 +1,10 @@
 import path from "path";
 import dotenv from "dotenv";
+<<<<<<< Updated upstream
 dotenv.config({ path: path.resolve(".env") });
+=======
+dotenv.config({ path: path.resolve(__dirname, '../../../../.env') });
+>>>>>>> Stashed changes
 
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";

@@ -2,7 +2,11 @@ import * as path from "path";
 import dotenv from "dotenv";
 
 // ✅ Force-load the .env file from apps/api
+<<<<<<< Updated upstream
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
+=======
+dotenv.config({ path: path.resolve(__dirname, '../../../../.env') });
+>>>>>>> Stashed changes
 console.log("🔍 Using DB URL:", process.env.DATABASE_URL);
 import { db } from "./drizzle.config";
 import { events } from "./schema";
