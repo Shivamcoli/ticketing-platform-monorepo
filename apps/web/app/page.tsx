@@ -1,69 +1,89 @@
-export default function Home() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <header className="border-b border-slate-700/50 backdrop-blur-sm bg-slate-900/50">
-        <div className="max-w-7xl mx-auto px-8 py-6">
-          <h1 className="text-3xl font-light tracking-tight text-slate-100">
-            Ticketing System
-          </h1>
-        </div>
-      </header>
+'use client';
+import { useEffect, useState } from 'react';
+import { API_BASE_URL } from './lib/api';
+import InfoComponent from './components/InfoComponent';
 
-      <main className="max-w-5xl mx-auto px-8 py-16">
-        <div className="space-y-12">
-          <div className="space-y-4">
-            <h2 className="text-4xl font-light text-slate-100 tracking-tight">
-              Dynamic Event Pricing
-            </h2>
-            <p className="text-lg text-slate-400 leading-relaxed max-w-2xl">
-              A sophisticated platform for managing events with intelligent
-              pricing algorithms and real-time availability tracking.
+export default function HomePage() {
+  const [events, setEvents] = useState<any[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
+  const [booking, setBooking] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // 🔹 Fetch events from backend
+  useEffect(() => {
+    async function loadEvents() {
+      try {
+        const res = await fetch(`${API_BASE_URL}/events`);
+        const data = await res.json();
+        setEvents(data);
+      } catch (err) {
+        console.error('Failed to fetch events:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadEvents();
+  }, []);
+
+  // 🔹 If booking done, show confirmation
+  if (booking) {
+    return (
+      <div className="p-6 text-center">
+        <h2 className="text-2xl font-semibold text-green-700">
+          ✅ Booking Confirmed!
+        </h2>
+        <p className="mt-2">Email: {booking.userEmail}</p>
+        <p>Quantity: {booking.quantity}</p>
+        <p>Total Paid: ₹{booking.pricePaid}</p>
+        <button
+          onClick={() => {
+            setBooking(null);
+            setSelectedEvent(null);
+          }}
+          className="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          Back to Events
+        </button>
+      </div>
+    );
+  }
+
+  // 🔹 If event selected, show info/booking form
+  if (selectedEvent) {
+    return (
+      <InfoComponent event={selectedEvent} onConfirm={(b) => setBooking(b)} />
+    );
+  }
+
+  // 🔹 Default view: show all events
+  return (
+    <div className="p-8">
+      <h1 className="text-3xl font-bold mb-6 text-center">Available Events</h1>
+
+      {loading && <p className="text-center">Loading events...</p>}
+
+      {!loading && events.length === 0 && (
+        <p className="text-center text-gray-600">No events available.</p>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {events.map((e) => (
+          <div
+            key={e.id}
+            className="border p-4 rounded-lg shadow hover:shadow-lg cursor-pointer transition"
+            onClick={() => setSelectedEvent(e)}
+          >
+            <h2 className="text-lg font-semibold">{e.name}</h2>
+            <p className="text-gray-600">{e.venue}</p>
+            <p className="text-gray-500">
+              {new Date(e.date).toLocaleDateString()}
+            </p>
+            <p className="text-blue-700 font-medium mt-2">
+              ₹{e.currentPrice} per ticket
             </p>
           </div>
-
-          <div className="grid gap-6 mt-12">
-            <div className="group bg-slate-800/40 border border-slate-700/50 rounded-lg p-8 hover:bg-slate-800/60 transition-all duration-300">
-              <h3 className="text-xl font-light text-slate-200 mb-3">
-                Database Architecture
-              </h3>
-              <p className="text-slate-400 leading-relaxed">
-                Design and implement a robust schema for events, pricing tiers,
-                and booking management.
-              </p>
-            </div>
-
-            <div className="group bg-slate-800/40 border border-slate-700/50 rounded-lg p-8 hover:bg-slate-800/60 transition-all duration-300">
-              <h3 className="text-xl font-light text-slate-200 mb-3">
-                API Infrastructure
-              </h3>
-              <p className="text-slate-400 leading-relaxed">
-                Configure secure endpoints for event creation, pricing
-                calculations, and transaction handling.
-              </p>
-            </div>
-
-            <div className="group bg-slate-800/40 border border-slate-700/50 rounded-lg p-8 hover:bg-slate-800/60 transition-all duration-300">
-              <h3 className="text-xl font-light text-slate-200 mb-3">
-                Event Interface
-              </h3>
-              <p className="text-slate-400 leading-relaxed">
-                Build an elegant listing experience with filtering, search, and
-                detailed event views.
-              </p>
-            </div>
-
-            <div className="group bg-slate-800/40 border border-slate-700/50 rounded-lg p-8 hover:bg-slate-800/60 transition-all duration-300">
-              <h3 className="text-xl font-light text-slate-200 mb-3">
-                Booking Flow
-              </h3>
-              <p className="text-slate-400 leading-relaxed">
-                Create a seamless reservation process with dynamic pricing and
-                instant confirmation.
-              </p>
-            </div>
-          </div>
-        </div>
-      </main>
+        ))}
+      </div>
     </div>
   );
 }

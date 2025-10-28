@@ -1,19 +1,31 @@
 {
   "name": "api",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.0.1",
   "scripts": {
-    "dev": "echo 'Setup your backend framework (NestJS/Express) and update this script'",
-    "build": "echo 'Add your build script here'",
-    "start": "echo 'Add your start script here'",
-    "lint": "eslint . --max-warnings 0",
-    "type-check": "tsc --noEmit"
+    "dev": "ts-node --project tsconfig.json src/main.ts",
+    "build": "nest build --delete-out-dir",
+    "start": "node dist/main.js"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@nestjs/common": "^11.0.9",
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/core": "^11.0.9",
+    "@nestjs/platform-express": "^11.0.9",
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.44.7",
+    "postgres": "^3.4.7",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "sql.js": "^1.13.0",
+    "sqlite": "^5.1.1"
+  },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
-    "@types/node": "^22.15.3",
-    "typescript": "5.9.2"
+    "@nestjs/cli": "11.0.9",
+    "@nestjs/schematics": "11.0.9",
+    "@nestjs/testing": "11.0.9",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/dotenv": "^8.2.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   }
 }
